@@ -2,140 +2,128 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_test_app/widgets/test_alet_dialog.dart';
+import '';
 import 'my_home_bloc.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title, required this.myHomeBloc})
-      : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-  final MyHomeBloc myHomeBloc;
+  const MyHomePage({Key? key}) : super(key: key);
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  showAlertDialog(BuildContext context, String text) {
-    // set up the button
-    Widget okButton = TextButton(
-      child: const Text("OK"),
-      onPressed: () => Navigator.pop(context, true),
-    );
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      content: Text(text),
-      actions: [
-        okButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    widget.myHomeBloc.dispose();
-  }
+  final myHomeBloc = MyHomeBloc();
+  StreamSubscription? _subscription;
 
   @override
   void initState() {
     super.initState();
+    _subscription = myHomeBloc.alertStream.stream.listen((event) {
+      showAlertDialog(event);
+    });
+
+    myHomeBloc.init();
   }
 
   @override
   Widget build(BuildContext context) {
-    widget.myHomeBloc.alertStream.stream.listen((event) {
-      showAlertDialog(context, event);
-    });
-
-    widget.myHomeBloc.init();
-
     return Scaffold(
+      key: const Key("scaffold"),
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        key: const Key("app_bar"),
+        title: const Text("Flutter app test", key: Key("text_test_app")),
       ),
       body: Center(
+        key: const Key("center"),
         child: Column(
+          key: const Key("column"),
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
+            const Text('You have pushed the button this many times:',
+                key: Key("text_pushed_btn")),
             StreamBuilder<String>(
                 initialData: "0",
-                stream: widget.myHomeBloc.counterStream.stream,
+                stream: myHomeBloc.counterStream.stream,
                 builder: (context, snapshot) {
                   return Text(
-                    snapshot.data.toString(),
+                    snapshot.data ?? "0",
+                    key: const Key("text_result"),
                     style: Theme.of(context).textTheme.headline4,
                   );
                 }),
-            const SizedBox(height: 10),
+            const SizedBox(key: Key("sb_result"), height: 10),
             StreamBuilder<bool>(
                 initialData: false,
-                stream: widget.myHomeBloc.divisibleStream.stream,
+                stream: myHomeBloc.divisibleStream.stream,
                 builder: (context, snapshotVisible) {
-                  return Visibility(
-                    child: const Text("The number divisible by 10"),
-                    visible: snapshotVisible.data ?? false,
-                    maintainSize: true,
-                    maintainAnimation: true,
-                    maintainState: true,
+                  final visible = snapshotVisible.data!;
+                  return AnimatedOpacity(
+                    duration: const Duration(milliseconds: 200),
+                    opacity: visible? 1 : 0,
+                    child: const Text("The number divisible by 10",
+                        key: Key("text_divisible")),
                   );
                 }),
           ],
         ),
       ),
       floatingActionButton: Row(
+        key: const Key("row"),
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Container(
+            key: const Key("cont_increment"),
             margin: const EdgeInsets.symmetric(horizontal: 5.0),
             child: FloatingActionButton(
-              onPressed: widget.myHomeBloc.incrementCounter,
-              tooltip: 'Increment',
-              child: const Icon(Icons.add),
+              key: const Key("increment_btn"),
+              onPressed: myHomeBloc.incrementCounter,
+              child: const Icon(
+                Icons.add,
+                key: Key("icon_add"),
+              ),
             ),
           ),
           Container(
+            key: const Key("cont_decrement"),
             margin: const EdgeInsets.symmetric(horizontal: 5.0),
             child: FloatingActionButton(
-              onPressed: widget.myHomeBloc.decrementCounter,
-              tooltip: 'Decrement',
-              child: const Icon(Icons.remove),
+              key: const Key("decrement_btn"),
+              onPressed: myHomeBloc.decrementCounter,
+              child: const Icon(
+                Icons.remove,
+                key: Key("icon_remove"),
+              ),
             ),
           ),
           Container(
+            key: const Key("cont_clear"),
             margin: const EdgeInsets.symmetric(horizontal: 5.0),
             child: FloatingActionButton(
-              onPressed: widget.myHomeBloc.resetCounter,
-              tooltip: 'Decrement',
-              child: const Text("C"),
+              key: const Key("clear_btn"),
+              onPressed: myHomeBloc.resetCounter,
+              child: const Text(
+                "C",
+                key: Key("text_clear"),
+              ),
             ),
           )
         ],
       ),
       // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  showAlertDialog(String text) {
+    CustomAlertDialog.show(context, text,doSome: (){});
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    myHomeBloc.dispose();
+    _subscription?.cancel();
+    _subscription = null;
   }
 }

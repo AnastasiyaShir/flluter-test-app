@@ -13,13 +13,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    MyHomeBloc myHomeBloc = MyHomeBloc();
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page',myHomeBloc: myHomeBloc),
+      home: const MyHomePage(),
     );
   }
 }

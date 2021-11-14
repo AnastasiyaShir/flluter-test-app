@@ -1,15 +1,11 @@
 import 'dart:async';
- class MyHomeBloc {
+
+class MyHomeBloc {
   int _counter = 0;
 
-  final StreamController<String> counterStream =
-      StreamController<String>();
-  final StreamController<String> alertStream =
-      StreamController<String>();
-
-  final StreamController<bool> divisibleStream =
-      StreamController<bool>();
-
+  final counterStream = StreamController<String>.broadcast();
+  final alertStream = StreamController<String>.broadcast();
+  final divisibleStream = StreamController<bool>.broadcast();
 
   void incrementCounter() {
     if (_counter + 1 > 31) {
@@ -18,7 +14,7 @@ import 'dart:async';
     }
     _counter++;
     _isDivisibleBy10(_counter);
-    counterStream.add((_counter).toString());
+    counterStream.add(_counter.toString());
     if (_counter == 5) {
       alertStream.add("The number is 5");
     }
@@ -32,7 +28,7 @@ import 'dart:async';
 
     _counter--;
     _isDivisibleBy10(_counter);
-    counterStream.add((_counter).toString());
+    counterStream.add(_counter.toString());
     if (_counter == 5) {
       alertStream.add("The number is 5");
     }
@@ -40,15 +36,11 @@ import 'dart:async';
 
   void resetCounter() {
     divisibleStream.add(false);
-    counterStream.add((_counter = 0).toString());
+    counterStream.add("${_counter = 0}");
   }
 
   _isDivisibleBy10(int number) {
-    if (number % 10 == 0) {
-      divisibleStream.add(true);
-    } else {
-      divisibleStream.add(false);
-    }
+      divisibleStream.add(number % 10 == 0);
   }
 
   dispose() {
@@ -56,10 +48,9 @@ import 'dart:async';
     counterStream.close();
     divisibleStream.close();
   }
-  
-  init(){
+
+  init() {
     divisibleStream.add(false);
     counterStream.add("0");
   }
-
 }
