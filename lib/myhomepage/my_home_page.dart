@@ -96,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 stream: widget.myHomeBloc.divisibleStream.stream,
                 builder: (context, snapshotVisible) {
                   return Visibility(
-                    child: const Text("The number divisible by 5"),
+                    child: const Text("The number divisible by 10"),
                     visible: snapshotVisible.data ?? false,
                     maintainSize: true,
                     maintainAnimation: true,

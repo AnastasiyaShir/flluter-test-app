@@ -17,7 +17,7 @@ import 'dart:async';
       return;
     }
     _counter++;
-    _isDivisibleBy5(_counter);
+    _isDivisibleBy10(_counter);
     counterStream.add((_counter).toString());
     if (_counter == 5) {
       alertStream.add("The number is 5");
@@ -31,7 +31,7 @@ import 'dart:async';
     }
 
     _counter--;
-    _isDivisibleBy5(_counter);
+    _isDivisibleBy10(_counter);
     counterStream.add((_counter).toString());
     if (_counter == 5) {
       alertStream.add("The number is 5");
@@ -43,8 +43,8 @@ import 'dart:async';
     counterStream.add((_counter = 0).toString());
   }
 
-  _isDivisibleBy5(int number) {
-    if (number != 0 && number % 5 == 0) {
+  _isDivisibleBy10(int number) {
+    if (number % 10 == 0) {
       divisibleStream.add(true);
     } else {
       divisibleStream.add(false);
