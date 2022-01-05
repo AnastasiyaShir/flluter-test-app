@@ -1,0 +1,13 @@
+
+Date:   04/01/2022
+ID:     HomePage Widget, 'behavior on value: 1'
+Summary: A notification appears that zero is divisible by 10
+Environment: Build: 1.0.0+1
+Priority: Medium
+Severity: Low
+Steps to reproduce:
+    1. Start the program
+    2. Make the counter equal to '1' by clicking on the '+' button
+    3. Make the counter equal to '0' by clicking on the '-' button
+Expected result: notification "The number can't be below 0 !!!" invisible
+Actual result: notification "The number can't be below 0 !!!" apparently
